@@ -29,19 +29,39 @@ export function treeToCode(nodes, edges, src='') {
             default:
                 //Exevution node
                 functions.push(node.text);
-                return 'new ExecutionNode('+node.text+')';
+                return 'new ExecutionNode(this.'+node.text+', this)';
         }
     }
     console.log(roots);
 
     let root = roots[0];
-    let tree = '//TREE BEGIN\ntree = ' + nodeToCode(root)+'\n//TREE END\n';
+    let tree = '//TREE BEGIN\ntree = ' + nodeToCode(root)+'\n//TREE END';
+
     let func = functions.map( (f) => {
-        return `${f}(){\n//CODE BEDIN\n//CODE END\n};\n`;
+        const regex = new RegExp(`${f}\\(.*\\)\\s*\\{\\s*\\\/\\\/CODE BEGIN\\s*([\\s\\S]*?)\\\/\\\/CODE END`, 'gm')
+        const matches = regex.exec(src);
+        if (matches !== null){
+            const body = matches[1];
+            return `${f}(){\n//CODE BEGIN\n${body}//CODE END\n};\n`
+        }
+        return `${f}(){\n//CODE BEGIN\n//CODE END\n};\n`;
     })
-    return func.join('\n')+tree;
+    const funcSrc = '//FUNC BEGIN\n'+func.join('\n')+'//FUNC END';
+    if (/\/\/FUNC BEGIN\s*([\s\S]*?)\/\/FUNC END/gm.exec(src) !== null){
+        src = src.replace(/\/\/FUNC BEGIN\s*([\s\S]*?)\/\/FUNC END/gm, funcSrc);
+    } else {
+        src += funcSrc+'\n';
+    }
+
+    if (/\/\/TREE BEGIN\s*([\s\S]*?)\/\/TREE END/gm.exec(src) !== null){
+        src = src.replace(/\/\/TREE BEGIN\s*([\s\S]*?)\/\/TREE END/gm, tree);
+    } else {
+        src += tree+'\n';
+    }
+
+    return src;
 }
 /*
-mazafaka\(.*\)\s*\{\s*\/\/CODE BEDIN\s*([\s\S]*?)\/\/CODE END
+mazafaka\(.*\)\s*\{\s*\/\/CODE BEGIN\s*([\s\S]*?)\/\/CODE END
 \/\/TREE BEGIN\s*([\s\S]*?)\/\/TREE END
 */

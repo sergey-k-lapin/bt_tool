@@ -1,5 +1,5 @@
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin'); // Импортируем плагин
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -11,9 +11,17 @@ module.exports = {
         'json.worker': 'monaco-editor/esm/vs/language/json/json.worker',
         'css.worker': 'monaco-editor/esm/vs/language/css/css.worker',
         'html.worker': 'monaco-editor/esm/vs/language/html/html.worker',
-        'ts.worker': 'monaco-editor/esm/vs/language/typescript/ts.worker'
+        'ts.worker': 'monaco-editor/esm/vs/language/typescript/ts.worker',
+        bt:{
+            library: {
+                name: 'bt',
+                type: 'umd',
+                // umdNamedDefine: true,
+              },
+            import: './src/lib/nodes/index.js'
+            
+        }
     },
-    // entry: './src/index.js',
     devServer: {
         hot: true,
         port: 4000
@@ -30,7 +38,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(jsx|js)$/,
+                test: /\.(jsx|js|mjs)$/,
                 include: path.resolve(__dirname, 'src'),
                 exclude: /node_modules/,
                 use: [{
@@ -61,7 +69,7 @@ module.exports = {
     plugins: [
         new MonacoWebpackPlugin(),
         new HtmlWebpackPlugin({
-            template: './src/index.html', // Данный html будет использован как шаблон
+            template: './src/index.html',
         }),
     ]
 };

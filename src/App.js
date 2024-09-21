@@ -13,11 +13,26 @@ loader.config({ monaco });
 function App() {
   let nodesData = JSON.parse(localStorage.getItem('_nodesData'));
   let edgesData = JSON.parse(localStorage.getItem('_edgesData'));
+  let src = JSON.parse(localStorage.getItem('_srcData'));
+
+  const defaultSrc = 'const {BT_STATES, SuccessLoopNode, SequenceNode, SelectorNode, RunningLoopNode, ExecutionNode} = bt;\n\
+class MyTree {\n\
+//FUNC BEGIN\n\
+//FUNC END\n\
+//TREE BEGIN\n\
+//TREE END\n\
+}\n\
+const behaviorTree = new MyTree();\n\
+console.log(behaviorTree);\n';
 
   if (!nodesData) {
     nodesData = [];
     edgesData = [];
- }
+  }
+
+  if (!src) {
+    src = defaultSrc;
+  }
 
   const [nodes, setNodes] = useState(nodesData);
   const [edges, setEdges] = useState(edgesData);
@@ -27,8 +42,11 @@ function App() {
   const editorRef = useRef(null);
   function handleEditorDidMount(editor, monaco) {
     editorRef.current = editor;
+    // if (editorRef.current.getValue() == '') {
+      editorRef.current.getModel().setValue(src)
+    // }
   }
-  const [src, setSrc] = useState('');
+  // const [src, setSrc] = useState('');
 
   const {
     selections,
@@ -52,27 +70,27 @@ function App() {
 
   const [addHidden, setAddHidden] = useState(false);
 
-  const getMaxId = ()=>{
-    if (nodes.length === 0){
+  const getMaxId = () => {
+    if (nodes.length === 0) {
       return 1;
     }
     let result = parseInt(nodes[0].id);
-    for(let node in nodes){
+    for (let node in nodes) {
       let value = parseInt(nodes[node].id);
-      if (value > result){
+      if (value > result) {
         result = value;
       }
     }
     return result;
   }
-  const addNode = (name) =>{
+  const addNode = (name) => {
     setNodes([...nodes, {
-      id: getMaxId()+1,
+      id: getMaxId() + 1,
       text: name
     }])
   }
 
-  const addNodeWithPrompt = () =>{
+  const addNodeWithPrompt = () => {
     let name = window.prompt("Enter task name");
     if (name) {
       addNode(name);
@@ -82,19 +100,20 @@ function App() {
   const Toolbar = () => {
     return (<>
       <div className="toolbar">
-        <button onClick={(event) => {addNode('>');}}>{'>'}</button>
-        <button onClick={(event) => {addNode('?');}}>?</button>
-        <button onClick={(event) => {addNode('SL');}}>SL</button>
-        <button onClick={(event) => {addNode('RL');}}>RL</button>
-        <button onClick={(event) => {addNodeWithPrompt()}}>E</button>
-        <button onClick={()=>{
+        <button onClick={(event) => { addNode('>'); }}>{'>'}</button>
+        <button onClick={(event) => { addNode('?'); }}>?</button>
+        <button onClick={(event) => { addNode('SL'); }}>SL</button>
+        <button onClick={(event) => { addNode('RL'); }}>RL</button>
+        <button onClick={(event) => { addNodeWithPrompt() }}>E</button>
+        <button onClick={() => {
           // console.log(JSON.stringify(nodes), JSON.stringify(edges));
           localStorage.setItem('_nodesData', JSON.stringify(nodes));
-          localStorage.setItem('_edgesData', JSON.stringify(edges))
+          localStorage.setItem('_edgesData', JSON.stringify(edges));
+          localStorage.setItem('_srcData', JSON.stringify(editorRef.current.getValue()));
         }}>Save</button>
-        <button onClick={ (event) => {
-          const _src = treeToCode(nodes, edges);
-          console.log(_src);
+        <button onClick={(event) => {
+          const _src = treeToCode(nodes, edges, editorRef.current.getValue());
+          // console.log(_src);
           // console.log( editorRef.current.getValue() );
           // setSrc(src);
           editorRef.current.getModel().setValue(_src);
@@ -114,7 +133,7 @@ function App() {
 
           onCanvasClick={event => {
             console.log('Canvas Clicked', event);
-            if (addHidden){
+            if (addHidden) {
               setAddHidden(false);
             }
             setSelections([]);
@@ -129,24 +148,25 @@ function App() {
             }]);
           }}
 
-          edge={<Edge add={<Add hidden={addHidden} />} 
+          edge={<Edge add={<Add hidden={addHidden} />}
             onAdd={(event, edge) => {
-                const id = `node-${Math.random()}`;
-                const newNode = {
-                  id,
-                  text: id
-                };
-                const results = upsertNode(nodes, edges, edge, newNode);
-                setNodes(results.nodes);
-                setEdges(results.edges);
-              }
+              const id = `node-${Math.random()}`;
+              const newNode = {
+                id,
+                text: id
+              };
+              const results = upsertNode(nodes, edges, edge, newNode);
+              setNodes(results.nodes);
+              setEdges(results.edges);
+            }
+
             }
             onClick={(event, edge) => {
               console.log('Selecting Edge', event, edge);
               setAddHidden(true);
               setSelections([edge.id]);
             }}
-            
+
             onRemove={(event, edge) => {
               console.log('Removing Edge', event, edge);
               setAddHidden(false);
@@ -156,46 +176,48 @@ function App() {
 
           />}
 
-          node={<Node dragCursor="grab" 
+          node={<Node dragCursor="grab"
             onClick={(event, node) => {
               setAddHidden(true);
               // debugger
-              if (!['?','>','RL','SL'].includes(node.text)){
+              if (!['?', '>', 'RL', 'SL'].includes(node.text)) {
                 let newText = window.prompt('Set new value', node.text);
-                if (newText){
-                  let _node = nodes.find((n) => {return n.id === node.id});
+                if (newText) {
+                  let _node = nodes.find((n) => { return n.id === node.id });
                   _node.text = newText;
                   console.log(nodes);
-                  setNodes([...nodes]);  
+                  setNodes([...nodes]);
                 }
               }
               onClick(event, node);
             }}
-            
+
             onRemove={(event, node) => {
               const result = removeAndUpsertNodes(nodes, edges, node);
               setEdges(result.edges);
               setNodes(result.nodes);
               clearSelections();
-            }} 
-          
+            }}
+
           />}
 
         />
       </div>
       <Toolbar />
       <div className="code-editor">
-            <div><button>Open/close</button></div>
-            <div>
-                <Editor 
-                  height="90vh"
-                  defaultLanguage="javascript"
-                  defaultValue={src}
-                  // theme ={'vs-dark'}
-                  onMount={handleEditorDidMount}
-                  />
-            </div>
+        <div><button onClick={() => {
+          eval(editorRef.current.getValue());
+        }}>Run</button></div>
+        <div>
+          <Editor
+            height="90vh"
+            defaultLanguage="javascript"
+            defaultValue={src}
+            // theme ={'vs-dark'}
+            onMount={handleEditorDidMount}
+          />
         </div>
+      </div>
 
     </>
   );
