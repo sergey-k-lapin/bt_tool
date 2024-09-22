@@ -19,7 +19,7 @@ code {
 .diagram {
   position: absolute;
   height: 100%;
-  width: 100%;
+  width: 59%;
 
   background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px !important;
   background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px !important;
@@ -35,14 +35,9 @@ code {
   position: absolute;
   top: 0;
   right: 2vh;
-  width: 50%;
-  height: 95%;
-  border: 1px black solid;
+  width: 40%;
+  height: 100%;
   background-color: white;
-}
-
-.code-editor close {
-  
 }
 
 .output {
