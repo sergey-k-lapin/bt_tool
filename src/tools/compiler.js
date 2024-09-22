@@ -23,7 +23,7 @@ export function treeToCode(nodes, edges, src='') {
                 return `new SuccessLoopNode([\n${getChildNodes(node).map( (node) => { return nodeToCode(node)}).join(',\n')}\n])`;
             }
             case '?':
-                return `new SelectionNode([\n${getChildNodes(node).map( (node) => { return nodeToCode(node)}).join(',\n')}\n])`;
+                return `new SelectorNode([\n${getChildNodes(node).map( (node) => { return nodeToCode(node)}).join(',\n')}\n])`;
             case '>':
                 return `new SequenceNode([\n${getChildNodes(node).map( (node) => { return nodeToCode(node)}).join(',\n')}\n])`;
             default:
@@ -32,7 +32,7 @@ export function treeToCode(nodes, edges, src='') {
                 return 'new ExecutionNode(this.'+node.text+', this)';
         }
     }
-    console.log(roots);
+    // console.log(roots);
 
     let root = roots[0];
     let tree = '//TREE BEGIN\ntree = ' + nodeToCode(root)+'\n//TREE END';
