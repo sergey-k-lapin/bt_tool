@@ -9,7 +9,7 @@ loader.config({ monaco });
 
 export const CodeEditor = () => {
 
-    const defaultSrc = 'const {BT_STATES, SuccessLoopNode, SequenceNode, SelectorNode, RunningLoopNode, ExecutionNode} = bt;\n\
+    const defaultSrc = 'const {BT_STATES, SuccessLoopNode, SequenceNode, ResetSequenceNode, SelectorNode, RunningLoopNode, ExecutionNode} = bt;\n\
   class MyTree {\n\
   //FUNC BEGIN\n\
   //FUNC END\n\

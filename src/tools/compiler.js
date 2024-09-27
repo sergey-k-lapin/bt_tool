@@ -16,6 +16,9 @@ export function treeToCode(nodes, edges, src='') {
 
     function nodeToCode(node) {
         switch(node.text){
+            case 'R':{
+                return `new ResetSequenceNode([\n${getChildNodes(node).map( (node) => { return nodeToCode(node)}).join(',\n')}\n])`;
+            }
             case 'RL':{
                 return `new RunningLoopNode([\n${getChildNodes(node).map( (node) => { return nodeToCode(node)}).join(',\n')}\n])`;
             }
@@ -28,7 +31,9 @@ export function treeToCode(nodes, edges, src='') {
                 return `new SequenceNode([\n${getChildNodes(node).map( (node) => { return nodeToCode(node)}).join(',\n')}\n])`;
             default:
                 //Exevution node
-                functions.push(node.text);
+                if (functions.indexOf(node.text) == -1){
+                    functions.push(node.text);
+                }
                 return 'new ExecutionNode(this.'+node.text+', this)';
         }
     }

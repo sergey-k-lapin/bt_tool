@@ -13,6 +13,9 @@ export class RunningLoopNode extends TreeNode {
                 if (this.state == BT_STATES.FAILED) {
                     return BT_STATES.FAILED
                 }
+                if (this.state == BT_STATES.PENDING) {
+                    return BT_STATES.PENDING
+                }
             }
             this.taskIndex = 0;
         } while(true)

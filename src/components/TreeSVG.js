@@ -86,7 +86,7 @@ const TreeSVG = (props) => {
                 node={<Node dragCursor="grab"
                     onClick={(event, node) => {
                         setAddHidden(true);
-                        if (!['?', '>', 'RL', 'SL'].includes(node.text)) {
+                        // if (!['?', '>', 'RL', 'SL'].includes(node.text)) {
                             let newText = window.prompt('Set new value', node.text);
                             if (newText) {
                                 let _node = nodes.find((n) => { return n.id === node.id });
@@ -94,7 +94,7 @@ const TreeSVG = (props) => {
                                 // console.log(nodes);
                                 setNodes([...nodes]);
                             }
-                        }
+                        // }
                         onClick(event, node);
                     }}
 

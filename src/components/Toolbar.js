@@ -38,14 +38,38 @@ const Toolbar = () => {
         }
     }
 
+    function download(data, filename, type) {
+        var file = new Blob([data], {type: type});
+        if (window.navigator.msSaveOrOpenBlob) // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename);
+        else { // Others
+            var a = document.createElement("a"),
+            url = URL.createObjectURL(file);
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+        }
+    }
     return <>
         <div className="toolbar">
 
-            <button onClick={(event) => { addNode('>'); }}>{'>'}</button>
-            <button onClick={(event) => { addNode('?'); }}>?</button>
+            <button title="Sequence node - выполняет каждую дочернюю ноду пока возвражается SUCCESS, в противном случае возвращает текущий статус." 
+                onClick={(event) => { addNode('>'); }}>{'>'}
+            </button>
+            <button title="Selector node - выполняет каждую ноду пока возвращается FALSE, в противном случае возвращается с текущим статусом."
+                onClick={(event) => { addNode('?'); }}>?</button>
             <button onClick={(event) => { addNode('SL'); }}>SL</button>
-            <button onClick={(event) => { addNode('RL'); }}>RL</button>
-            <button onClick={(event) => { addNodeWithPrompt() }}>E</button>
+            <button title="Success loop - циклически выполняет дочерние ноды пока возвражается RUNNING" 
+                onClick={(event) => { addNode('RL'); }}>RL</button>
+            <button title="Success loop - циклически выполняет дочерние ноды пока возвражается RUNNING" 
+                onClick={(event) => { addNode('R'); }}>R</button>
+            <button title="Reset sequence - resterts children iteration when receive RUNNING, in other cases ats as sequence node."
+                onClick={(event) => { addNodeWithPrompt() }}>E</button>
 
             <button onClick={() => {
                 localStorage.setItem('_nodesData', JSON.stringify(nodes));
@@ -58,6 +82,30 @@ const Toolbar = () => {
                 editor.getModel().setValue(_src);
                 editor.getAction('editor.action.formatDocument').run();
             }}>Code</button>
+
+            <button onClick={() => {
+                const project = JSON.stringify({
+                    '_nodesData': nodes,
+                    '_edgesData': edges,
+                    '_srcData': editor.getValue()
+                });
+                download(project,'bt_project.json','application/json')
+            }}>Export</button>
+
+            <input type="file" onChange={(e)=>{
+                  var file = e.target.files[0];
+                  if (!file) {
+                    return;
+                  }
+                  const reader = new FileReader();
+                  reader.onload = function(e) {
+                    const contents = JSON.parse(e.target.result);
+                    editor.getModel().setValue(contents._srcData);
+                    setNodes(contents._nodesData);
+                    setEdges(contents._edgesData);
+                  };
+                  reader.readAsText(file);
+            }}/>
 
         </div>
     </>
