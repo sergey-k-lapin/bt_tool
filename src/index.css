@@ -31,6 +31,11 @@ code {
 
 }
 
+.diagram-settings {
+  position: fixed;
+  bottom: 0;
+}
+
 .code-editor {
   position: absolute;
   top: 0;

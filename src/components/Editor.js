@@ -38,7 +38,7 @@ export const CodeEditor = () => {
             }}>Run</button></div>
             <div>
                 <Editor
-                    height="99vh"
+                    height="95vh"
                     defaultLanguage="javascript"
                     defaultValue={src}
                     // theme ={'vs-dark'}

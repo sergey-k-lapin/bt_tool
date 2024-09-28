@@ -5,6 +5,7 @@ import { graphStore } from './data/graphStore';
 
 import TreeSVG from './components/TreeSVG';
 import Toolbar from './components/Toolbar';
+import DiagramSettings from './components/DiagramSettings';
 import CodeEditor from './components/Editor';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
     <>
       <TreeSVG />
       <Toolbar />
+      <DiagramSettings />
       <CodeEditor />
     </>
   );

@@ -55,6 +55,7 @@ const Toolbar = () => {
             }, 0);
         }
     }
+
     return <>
         <div className="toolbar">
 
