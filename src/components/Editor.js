@@ -33,9 +33,6 @@ export const CodeEditor = () => {
 
     return <>
         <div className="code-editor">
-            <div><button onClick={() => {
-                eval(editorRef.current.getValue());
-            }}>Run</button></div>
             <div>
                 <Editor
                     height="95vh"

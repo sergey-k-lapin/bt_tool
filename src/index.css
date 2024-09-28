@@ -12,10 +12,6 @@ code {
     monospace;
 }
 
-.toolbar {
-  position: fixed;
-}
-
 .diagram {
   position: absolute;
   height: 100%;
@@ -30,10 +26,60 @@ code {
    linear-gradient(90deg, rgba(130, 130, 130, 0.25) 1px, transparent 1px) !important;
 
 }
+.nodes-palette {
+  position: absolute;
+  top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.nodes-palette:hover {
+  opacity: 1.0;
+}
+
+.nodes-palette button {
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+  background-color: rgb(43	45	61);
+  border: 1px solid #475872;
+  border-radius: 3px;
+  color: #d6e7ff;
+  transition: border 0.2s;
+  transition: border-color 0.2s;
+}
+
+.nodes-palette button:hover {
+  border: 2px solid #7592bc;
+}
+
+.toolbar {
+  position: fixed;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+}
+
+.toolbar button {
+  cursor: pointer;
+}
 
 .diagram-settings {
   position: fixed;
   bottom: 0;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+}
+
+.diagram-settings button {
+  cursor: pointer;
 }
 
 .code-editor {
