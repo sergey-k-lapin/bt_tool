@@ -60,7 +60,7 @@ const Toolbar = () => {
                         '_srcData': editor.getValue()
                     });
                     download(project, 'bt_project.json', 'application/json');
-                    setOpen( false );
+                    // setOpen( false );
                 }}>
                 <svg
                     viewBox="0 0 24 24"
@@ -83,6 +83,7 @@ const Toolbar = () => {
                     editor.getModel().setValue(contents._srcData);
                     setNodes(contents._nodesData);
                     setEdges(contents._edgesData);
+                    setOpen( false );
                 };
                 reader.readAsText(file);
             }} />
@@ -90,7 +91,6 @@ const Toolbar = () => {
                 title='Import'
                 onClick={() => {
                     fileInput.current.click();
-                    setOpen( false );
                  }}>
                 <svg
                     viewBox="0 0 24 24"
