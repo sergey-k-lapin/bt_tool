@@ -35,7 +35,7 @@ export const CodeEditor = () => {
         <div className="code-editor">
             <div>
                 <Editor
-                    height="95vh"
+                    height="99vh"
                     defaultLanguage="javascript"
                     defaultValue={src}
                     // theme ={'vs-dark'}
