@@ -1,6 +1,6 @@
 import './App.css';
 
-import React, { useRef, useStat, createRef } from 'react';
+import React, { useRef, createRef } from 'react';
 import { graphStore } from './data/graphStore';
 
 import TreeSVG from './components/TreeSVG';
@@ -67,11 +67,11 @@ function App() {
 
   return (
     <>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <div style={{ height: '100vh', width: size2css(panels.current.left.size) }} ref={panels.current.left.element}>
+      <div className='splitter'>
+        <div className='panel' style={{ width: size2css(panels.current.left.size) }} ref={panels.current.left.element}>
           <TreeSVG />
         </div>
-        <div style={{ height: '100vh', width: '10px', cursor: 'col-resize' }}
+        <div className='gutter'
           onMouseDown={(e) => {
             percentsPerPixel.current = 100.0 / e.target.parentNode.clientWidth;
             m.current.x = e.clientX;
@@ -82,7 +82,7 @@ function App() {
             }, {once: true});
           }}
         ></div>
-        <div style={{ height: '100vh', width: size2css(panels.current.right.size) }} ref={panels.current.right.element}>
+        <div className='panel' style={{ width: size2css(panels.current.right.size) }} ref={panels.current.right.element}>
           <CodeEditor />
         </div>
       </div>
