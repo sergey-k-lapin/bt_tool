@@ -7,18 +7,17 @@ import { loader } from '@monaco-editor/react';
 
 loader.config({ monaco });
 
+export const defaultSrc = 'const {BT_STATES, SuccessLoopNode, SequenceNode, ResetSequenceNode, SelectorNode, RunningLoopNode, ExecutionNode} = bt;\n\
+class MyTree {\n\
+//FUNC BEGIN\n\
+//FUNC END\n\
+//TREE BEGIN\n\
+//TREE END\n\
+}\n\
+const behaviorTree = new MyTree();\n\
+console.log(behaviorTree);\n';
+
 export const CodeEditor = () => {
-
-    const defaultSrc = 'const {BT_STATES, SuccessLoopNode, SequenceNode, ResetSequenceNode, SelectorNode, RunningLoopNode, ExecutionNode} = bt;\n\
-  class MyTree {\n\
-  //FUNC BEGIN\n\
-  //FUNC END\n\
-  //TREE BEGIN\n\
-  //TREE END\n\
-  }\n\
-  const behaviorTree = new MyTree();\n\
-  console.log(behaviorTree);\n';
-
     let src = JSON.parse(localStorage.getItem('_srcData'));
     if (!src) {
         src = defaultSrc;

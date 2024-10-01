@@ -49,8 +49,8 @@ function App() {
   }
   
   function changePanels(delta){
-    panels.current.left.size -= delta*percentsPerPixel.current;
-    panels.current.right.size += delta*percentsPerPixel.current;
+    panels.current.left.size -= delta;
+    panels.current.right.size += delta;
     changePanelSize(panels.current.left.size, panels.current.left);
     changePanelSize(panels.current.right.size, panels.current.right);
   }
@@ -59,7 +59,7 @@ function App() {
   console.log('Перерисовал шайнан.');
 
   const onMouseMove = (e) => {
-      changePanels(m.current.x - e.clientX);
+      changePanels( (m.current.x - e.clientX)*percentsPerPixel.current );
       m.current.x = e.clientX;
       m.current.y = e.clientY;
   }

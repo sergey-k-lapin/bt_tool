@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { graphStore } from '../data/graphStore';
 import { treeToCode } from '../tools/compiler';
 import { editorStore } from '../data/editorStore';
+import { defaultSrc } from './Editor';
 
 const Toolbar = () => {
     const { nodes, edges, setNodes, setEdges } = graphStore;
@@ -33,13 +34,33 @@ const Toolbar = () => {
     let controls = null;
     if (open) {
         controls = <>
+            <button title='New'
+                onClick={()=>{
+                    // localStorage.setItem('_nodesData', JSON.stringify([]));
+                    // localStorage.setItem('_edgesData', JSON.stringify([]));
+                    // localStorage.setItem('_srcData', JSON.stringify(defaultSrc));
+                    setNodes([]);
+                    setEdges([]);
+                    editor.getModel().setValue(defaultSrc);
+                    setOpen(false);
+                }}
+            >
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    height="2em"
+                    width="2em"
+                >
+                    <path d="M6 2a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6H6zm8 7h-1V4l5 5h-4z" />
+                </svg>
+            </button>
             <button
                 title='Save'
                 onClick={() => {
                     localStorage.setItem('_nodesData', JSON.stringify(nodes));
                     localStorage.setItem('_edgesData', JSON.stringify(edges));
                     localStorage.setItem('_srcData', JSON.stringify(editor.getValue()));
-                    setOpen( false );
+                    setOpen(false);
                 }}>
                 <svg
                     viewBox="0 0 1024 1024"
@@ -83,7 +104,7 @@ const Toolbar = () => {
                     editor.getModel().setValue(contents._srcData);
                     setNodes(contents._nodesData);
                     setEdges(contents._edgesData);
-                    setOpen( false );
+                    setOpen(false);
                 };
                 reader.readAsText(file);
             }} />
@@ -91,7 +112,7 @@ const Toolbar = () => {
                 title='Import'
                 onClick={() => {
                     fileInput.current.click();
-                 }}>
+                }}>
                 <svg
                     viewBox="0 0 24 24"
                     fill="currentColor"
@@ -108,7 +129,7 @@ const Toolbar = () => {
                     const _src = treeToCode(nodes, edges, editor.getValue());
                     editor.getModel().setValue(_src);
                     editor.getAction('editor.action.formatDocument').run();
-                    setOpen( false );
+                    setOpen(false);
                 }}>
                 <svg
                     viewBox="0 0 24 24"
@@ -124,7 +145,7 @@ const Toolbar = () => {
             <button
                 title='Run'
                 onClick={() => {
-                    setOpen( false );
+                    setOpen(false);
                     eval(editor.getValue());
                 }}>
                 <svg
@@ -142,7 +163,7 @@ const Toolbar = () => {
     return <>
         <div className="toolbar">
             <button
-                onClick={() => { setOpen( !open ) }}
+                onClick={() => { setOpen(!open) }}
             >
                 <svg
                     viewBox="0 0 1024 1024"
