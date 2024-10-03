@@ -2,6 +2,7 @@ import './App.css';
 
 import React, { useRef, createRef } from 'react';
 import { graphStore } from './data/graphStore';
+import { normalize } from './tools/compiler';
 
 import TreeSVG from './components/TreeSVG';
 import Toolbar from './components/Toolbar';
@@ -18,6 +19,7 @@ function App() {
     nodesData = [];
     edgesData = [];
   }
+  normalize(nodesData, edgesData);
 
   graphStore.setNodes(nodesData);
   graphStore.setEdges(edgesData);

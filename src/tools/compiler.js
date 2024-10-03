@@ -1,5 +1,4 @@
-export function treeToCode(nodes, edges, src='') {
-    //find roots
+function findRoots(nodes, edges){
     const roots = [];
     for(let n in nodes) {
         let node = nodes[n];
@@ -8,11 +7,25 @@ export function treeToCode(nodes, edges, src='') {
             roots.push(node);
         }
     }
+    return roots;
+}
+
+export function treeToCode(nodes, edges, src='') {
+    //find roots
+    const roots = findRoots(nodes, edges);
+    // for(let n in nodes) {
+    //     let node = nodes[n];
+    //     let root = edges.find( (edge) => { return edge.to == node.id})
+    //     if (!root){
+    //         roots.push(node);
+    //     }
+    // }
+
+    let functions = [];
     function getChildNodes(node){
         let childEdges = edges.filter( (child) => {return child.from === node.id});
         return childEdges.map( (edge) => { return nodes.find( (node) => {return node.id === edge.to})});
     }
-    let functions = [];
 
     function nodeToCode(node) {
         switch(node.text){
@@ -49,7 +62,7 @@ export function treeToCode(nodes, edges, src='') {
             const body = matches[1];
             return `${f}(){\n//CODE BEGIN\n${body}//CODE END\n};\n`
         }
-        return `${f}(){\n//CODE BEGIN\n//CODE END\n};\n`;
+        return `${f}(){\n//CODE BEGIN\nreturn BT_STATES.FAILED;\n//CODE END\n};\n`;
     })
     const funcSrc = '//FUNC BEGIN\n'+func.join('\n')+'//FUNC END';
     if (/\/\/FUNC BEGIN\s*([\s\S]*?)\/\/FUNC END/gm.exec(src) !== null){
@@ -70,3 +83,32 @@ export function treeToCode(nodes, edges, src='') {
 mazafaka\(.*\)\s*\{\s*\/\/CODE BEGIN\s*([\s\S]*?)\/\/CODE END
 \/\/TREE BEGIN\s*([\s\S]*?)\/\/TREE END
 */
+
+export function normalize(nodes, edges){
+    const roots = findRoots(nodes, edges);
+    let ID=1;
+    const node = roots[0];
+
+    function getChildNodes(node){
+        let childEdges = edges.filter( (child) => {return child.from === node.id});
+        return childEdges.map( (edge) => { return nodes.find( (node) => {return node.id === edge.to})});
+    }
+
+    function walk(node){
+        node.newId = ID++;
+        getChildNodes(node).forEach((node)=>{walk(node)});
+    }
+    walk(node);
+    edges.forEach((edge)=>{
+        let nodeFrom = nodes.find((node) => node.id == edge.from);
+        let nodeTo = nodes.find((node) => node.id == edge.to);
+        edge.from = nodeFrom.newId;
+        edge.to = nodeTo.newId;
+        edge.id = edge.from+'-'+edge.to;
+    })
+    nodes.forEach((node)=>{
+        node.id = node.newId;
+        delete node.newId;
+    })
+    nodes.sort((a,b) => a.id - b.id);
+}

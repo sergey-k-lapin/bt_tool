@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
 import { graphStore } from '../data/graphStore';
-import { treeToCode } from '../tools/compiler';
+import { treeToCode, normalize } from '../tools/compiler';
 import { editorStore } from '../data/editorStore';
 import { defaultSrc } from './Editor';
 
@@ -34,14 +34,36 @@ const Toolbar = () => {
     let controls = null;
     if (open) {
         controls = <>
+            <button title='Normalize tree'
+                onClick={() => {
+                    let newNode = [...nodes];
+                    let newEdges = [...edges];
+                    normalize(newNode, newEdges);
+                    setNodes(newNode);
+                    setEdges(newEdges);
+                    setOpen(false);
+                }}
+            >
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    height="2em"
+                    width="2em"
+                >
+                    <path d="M12 2a10 10 0 1010 10A10 10 0 0012 2m6 9h-5l1.81-1.81A3.94 3.94 0 0012 8a4 4 0 103.86 5h2.05A6 6 0 1112 6a5.91 5.91 0 014.22 1.78L18 6z" />
+                </svg>
+            </button>
+
             <button title='New'
-                onClick={()=>{
+                onClick={() => {
                     // localStorage.setItem('_nodesData', JSON.stringify([]));
                     // localStorage.setItem('_edgesData', JSON.stringify([]));
                     // localStorage.setItem('_srcData', JSON.stringify(defaultSrc));
-                    setNodes([]);
-                    setEdges([]);
-                    editor.getModel().setValue(defaultSrc);
+                    if (confirm('Clear all data?')) {
+                        setNodes([]);
+                        setEdges([]);
+                        editor.getModel().setValue(defaultSrc);
+                    }
                     setOpen(false);
                 }}
             >
@@ -102,6 +124,7 @@ const Toolbar = () => {
                 reader.onload = function (e) {
                     const contents = JSON.parse(e.target.result);
                     editor.getModel().setValue(contents._srcData);
+                    normalize(contents._nodesData, contents._edgesData);
                     setNodes(contents._nodesData);
                     setEdges(contents._edgesData);
                     setOpen(false);
