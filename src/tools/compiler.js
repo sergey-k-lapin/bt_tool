@@ -88,6 +88,7 @@ export function normalize(nodes, edges){
     const roots = findRoots(nodes, edges);
     let ID=1;
     const node = roots[0];
+    if (!node) return;
 
     function getChildNodes(node){
         let childEdges = edges.filter( (child) => {return child.from === node.id});
