@@ -9,6 +9,7 @@ export class SequenceNode extends TreeNode {
                 return BT_STATES.RUNNING
             }
             if (this.state == BT_STATES.FAILED) {
+                this.taskIndex = 0;
                 return BT_STATES.FAILED
             }
             if (this.state == BT_STATES.PENDING) {

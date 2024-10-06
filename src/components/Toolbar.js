@@ -204,3 +204,11 @@ const Toolbar = () => {
 }
 
 export default observer(Toolbar);
+
+//TODO:
+// const action = myEditor?.getAction("actions.find");
+// const model = myEditor.getModel();
+// const range = model.findMatches('hello')[0].range;
+
+// myEditor.setSelection(range);
+// myEditor.getAction('actions.find').run();

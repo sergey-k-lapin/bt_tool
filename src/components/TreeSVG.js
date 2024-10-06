@@ -3,6 +3,7 @@ import { Canvas, Edge, Add, Node, upsertNode, useSelection, removeAndUpsertNodes
 import { graphStore } from '../data/graphStore';
 import { observer } from 'mobx-react-lite';
 import { toolbarStore } from '../data/toolbarStore';
+import { editorStore } from '../data/editorStore';
 
 
 const TreeSVG = (props) => {
@@ -56,7 +57,7 @@ const TreeSVG = (props) => {
                 }}
 
                 onNodeLink={(_event, from, to) => {
-                    if (dragType == 'node'){
+                    if (dragType == 'node') {
                         const newEdges = edges.filter(e => e.to !== from.id);
                         setEdges([...newEdges, createEdgeFromNodes(to, from)]);
                     } else {
@@ -92,16 +93,22 @@ const TreeSVG = (props) => {
 
                 node={<Node dragCursor="grab" dragType={dragType}
                     onClick={(event, node) => {
-                        setAddHidden(true);
-                        // if (!['?', '>', 'RL', 'SL'].includes(node.text)) {
-                        let newText = window.prompt('Set new value', node.text);
-                        if (newText) {
-                            let _node = nodes.find((n) => { return n.id === node.id });
-                            _node.text = newText;
-                            setNodes([...nodes]);
+                        if (event.altKey) {
+                            setAddHidden(true);
+                            // if (!['?', '>', 'RL', 'SL'].includes(node.text)) {
+                            let newText = window.prompt('Set new value', node.text);
+                            if (newText) {
+                                let _node = nodes.find((n) => { return n.id === node.id });
+                                _node.text = newText;
+                                setNodes([...nodes]);
+                            }
+                            // }
+                            onClick(event, node);
+                        } else {
+                            if (!['?', '>', 'RL', 'SL', 'R'].includes(node.text)) {
+                                editorStore.findText(node.text);
+                            }
                         }
-                        // }
-                        onClick(event, node);
                     }}
 
                     onRemove={(event, node) => {
