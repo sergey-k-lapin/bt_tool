@@ -22,10 +22,12 @@ export class EditorStore {
 
     findText(text){
         const model = this.editor.getModel();
-        const range = model.findMatches(text)[0].range;
-        this.editor.setSelection(range);
-        this.editor.revealRangeInCenter(range);
-        this.editor.getAction('actions.findWithSelection').run();
+        const match = model.findMatches(text)[0];
+        if (match?.range){
+            this.editor.setSelection(match.range);
+            this.editor.revealRangeInCenter(match.range);
+            this.editor.getAction('actions.findWithSelection').run();
+        }
     }
 };
 

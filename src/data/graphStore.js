@@ -1,4 +1,5 @@
 import { makeObservable, observable, action } from 'mobx';
+import { createRef } from 'react';
 
 export class GraphStore {
     constructor(){
@@ -12,6 +13,8 @@ export class GraphStore {
 
     nodes = [];
     edges = [];
+
+    svgRef;
 
     setNodes = (_nodes) => {
         this.nodes = _nodes;

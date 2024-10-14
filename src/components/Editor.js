@@ -7,7 +7,7 @@ import { loader } from '@monaco-editor/react';
 
 loader.config({ monaco });
 
-export const defaultSrc = 'const {BT_STATES, SuccessLoopNode, SequenceNode, ResetSequenceNode, SelectorNode, RunningLoopNode, ExecutionNode} = bt;\n\
+export const defaultSrc = 'const {BT_STATES, LoopNode, SuccessLoopNode, SequenceNode, ResetSequenceNode, SelectorNode, RunningLoopNode, ExecutionNode} = bt;\n\
 class MyTree {\n\
 //FUNC BEGIN\n\
 //FUNC END\n\

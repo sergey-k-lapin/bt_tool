@@ -42,6 +42,11 @@ export function treeToCode(nodes, edges, src='') {
                 return `new SelectorNode([\n${getChildNodes(node).map( (node) => { return nodeToCode(node)}).join(',\n')}\n])`;
             case '>':
                 return `new SequenceNode([\n${getChildNodes(node).map( (node) => { return nodeToCode(node)}).join(',\n')}\n])`;
+            case 'L':{
+                let childnodes = getChildNodes(node);
+                return `new LoopNode([\n${nodeToCode(childnodes[0])}\n])`;
+            }
+
             default:
                 //Exevution node
                 if (functions.indexOf(node.text) == -1){

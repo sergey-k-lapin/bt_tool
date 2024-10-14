@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createRef } from 'react';
 import { Canvas, Edge, Add, Node, upsertNode, useSelection, removeAndUpsertNodes, hasLink, createEdgeFromNodes } from 'reaflow';
 import { graphStore } from '../data/graphStore';
 import { observer } from 'mobx-react-lite';
@@ -12,7 +12,11 @@ const TreeSVG = (props) => {
     const dragType = toolbarStore.dragType;
     const panType = toolbarStore.panType;
 
-    useEffect(() => { }, [])
+    const canvasRef = createRef();
+    useEffect(() => {
+        graphStore.svgRef = canvasRef.current.svgRef.current;
+    }, [])
+
     const {
         selections,
         onCanvasClick,
@@ -31,10 +35,24 @@ const TreeSVG = (props) => {
         }
     });
 
+    const getMaxId = () => {
+        if (nodes.length === 0) {
+            return 1;
+        }
+        let result = parseInt(nodes[0].id);
+        for (let node in nodes) {
+            let value = parseInt(nodes[node].id);
+            if (value > result) {
+                result = value;
+            }
+        }
+        return result;
+    }
 
     return <>
         <div className='diagram'>
             <Canvas
+                ref={canvasRef}
                 panType={panType}
                 nodes={nodes}
                 edges={edges}
@@ -67,10 +85,10 @@ const TreeSVG = (props) => {
 
                 edge={<Edge add={<Add hidden={addHidden} />}
                     onAdd={(event, edge) => {
-                        const id = `node-${Math.random()}`;
+                        const id = getMaxId()+1;
                         const newNode = {
                             id,
-                            text: id
+                            text: 'Node id:'+id
                         };
                         const results = upsertNode(nodes, edges, edge, newNode);
                         setNodes(results.nodes);

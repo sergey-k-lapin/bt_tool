@@ -30,6 +30,25 @@ const Toolbar = () => {
             }, 0);
         }
     }
+
+    function makeSvg(svg) {
+        //get svg source.
+        var serializer = new XMLSerializer();
+        var source = serializer.serializeToString(svg);
+
+        //add name spaces.
+        if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+            source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+        }
+        if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+            source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+        }
+
+        //add xml declaration
+        source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+        return source;
+    }
+
     const fileInput = React.createRef();
     let controls = null;
     if (open) {
@@ -180,6 +199,14 @@ const Toolbar = () => {
                     <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm144.1 454.9L437.7 677.8a8.02 8.02 0 01-12.7-6.5V353.7a8 8 0 0112.7-6.5L656.1 506a7.9 7.9 0 010 12.9z" />
                 </svg>
             </button>
+            {/* <button
+                onClick={() => {
+                    console.log(graphStore.svgRef);
+                    download(makeSvg(graphStore.svgRef),'svg','image/svg+xml' );
+                }}
+            >
+                SVG
+            </button> */}
         </>
     }
 

@@ -12,22 +12,27 @@ module.exports = {
         'css.worker': 'monaco-editor/esm/vs/language/css/css.worker',
         'html.worker': 'monaco-editor/esm/vs/language/html/html.worker',
         'ts.worker': 'monaco-editor/esm/vs/language/typescript/ts.worker',
-        bt:{
+        bt: {
             library: {
                 name: 'bt',
                 type: 'umd',
                 // umdNamedDefine: true,
-              },
+            },
             import: './src/lib/nodes/index.js'
-            
+
         }
     },
     devServer: {
         hot: true,
-        port: 4000
-      },
+        port: 4000,
+        client: {
+            overlay: {
+                runtimeErrors: false,
+            },
+        },
+    },
     devtool: 'source-map',
-    
+
     output: {
         assetModuleFilename: 'assets/[hash][ext][query]', // Все ассеты будут
         globalObject: 'self',

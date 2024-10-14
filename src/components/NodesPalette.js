@@ -36,18 +36,21 @@ export const NodesPalette = () => {
         
 return <>
         <div className='nodes-palette'>
-            <button title="Sequence node - выполняет каждую дочернюю ноду пока возвражается SUCCESS, в противном случае возвращает текущий статус."
+            <button title="Sequence node"
                 onClick={(event) => { addNode('>'); }}>{'>'}
             </button>
-            <button title="Selector node - выполняет каждую ноду пока возвращается FALSE, в противном случае возвращается с текущим статусом."
+            <button title="Selector node"
                 onClick={(event) => { addNode('?'); }}>?</button>
-            <button onClick={(event) => { addNode('SL'); }}>SL</button>
-            <button title="Success loop - циклически выполняет дочерние ноды пока возвражается RUNNING"
+            <button title="Success loop"
+                onClick={(event) => { addNode('SL'); }}>SL</button>
+            <button title="Running loop"
                 onClick={(event) => { addNode('RL'); }}>RL</button>
-            <button title="Success loop - циклически выполняет дочерние ноды пока возвражается RUNNING"
+            <button title="Reset sequence"
                 onClick={(event) => { addNode('R'); }}>R</button>
-            <button title="Reset sequence - resterts children iteration when receive RUNNING, in other cases ats as sequence node."
+            <button title="Task execution"
                 onClick={(event) => { addNodeWithPrompt() }}>E</button>
+            <button title="Loop - Repeats its only child entity. By default, won’t repeat when the child entity fails. This can be customized using the parameters below."
+                onClick={(event) => { addNode('L'); }}>L</button>
         </div>
     </>
 }
