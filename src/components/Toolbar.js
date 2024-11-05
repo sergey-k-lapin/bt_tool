@@ -1,9 +1,10 @@
 import { observer } from 'mobx-react-lite';
-import React, { useState } from 'react';
+import React, { createElement, useState } from 'react';
 import { graphStore } from '../data/graphStore';
 import { treeToCode, normalize } from '../tools/compiler';
 import { editorStore } from '../data/editorStore';
 import { defaultSrc } from './Editor';
+import { toPng } from 'html-to-image';
 
 const Toolbar = () => {
     const { nodes, edges, setNodes, setEdges } = graphStore;
@@ -31,23 +32,65 @@ const Toolbar = () => {
         }
     }
 
-    function makeSvg(svg) {
-        //get svg source.
-        var serializer = new XMLSerializer();
-        var source = serializer.serializeToString(svg);
+    function downloadImage(dataUrl, name) {
+        const a = document.createElement('a');
+      
+        a.setAttribute('download', name);
+        a.setAttribute('href', dataUrl);
+        a.click();
+      }
 
-        //add name spaces.
-        if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
-            source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
-        }
-        if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
-            source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
-        }
+    // function makeSvg(svg) {
+    //     let shadowSvg = svg.cloneNode(true);
+        // function traverse(nodes, shadowNodes) {
+        //     for (let index = 0; index < nodes.length; index++) {
+        //         let node = nodes[index];
+        //         let shadowNode = shadowNodes[index]
+        //         if (node instanceof Element) {
+        //             let className = node.getAttribute('class') || '';
+        //             // if (className) {
+        //                 let style = getComputedStyle(node);
+        //                 const transform = style.transform;
+        //                 if (transform != 'none'){
+        //                     // debugger
+        //                     const regex = /-?\d+(\.\d+)?/g;
+        //                     const matrix = transform.match(regex);
+        //                     shadowNode.style.transform = `translate(${matrix[4]}px,${matrix[5]}px)`;
+        //                     console.log(matrix);
+        //                     console.log(node.tagName, node.getAttribute('id'));
+        //                 }
 
-        //add xml declaration
-        source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
-        return source;
-    }
+        //                 shadowNode.style.fill = className.indexOf('_path_') == -1 ? style.fill : 'none';
+        //                 shadowNode.style.stroke = style.stroke;
+        //                 shadowNode.style.strokeWidth = style.strokeWidth;
+        //                 shadowNode.removeAttribute('class');
+        //             // }
+        //             if (node.childNodes && node.childNodes.length > 0) {
+        //                 traverse(node.childNodes, shadowNode.childNodes);
+        //             }
+        //         } else {
+        //             // debugger
+        //             // console.log(node);
+        //         }
+        //     }
+        // }
+        // traverse(svg.childNodes, shadowSvg.childNodes);
+    //     var serializer = new XMLSerializer();
+    //     var source = serializer.serializeToString(shadowSvg);
+    //     shadowSvg = undefined;
+
+    //     //add name spaces.
+    //     if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+    //         source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    //     }
+    //     if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+    //         source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+    //     }
+
+    //     //add xml declaration
+    //     source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+    //     return source;
+    // }
 
     const fileInput = React.createRef();
     let controls = null;
@@ -75,9 +118,6 @@ const Toolbar = () => {
 
             <button title='New'
                 onClick={() => {
-                    // localStorage.setItem('_nodesData', JSON.stringify([]));
-                    // localStorage.setItem('_edgesData', JSON.stringify([]));
-                    // localStorage.setItem('_srcData', JSON.stringify(defaultSrc));
                     if (confirm('Clear all data?')) {
                         setNodes([]);
                         setEdges([]);
@@ -199,14 +239,17 @@ const Toolbar = () => {
                     <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm144.1 454.9L437.7 677.8a8.02 8.02 0 01-12.7-6.5V353.7a8 8 0 0112.7-6.5L656.1 506a7.9 7.9 0 010 12.9z" />
                 </svg>
             </button>
-            {/* <button
+            <button
                 onClick={() => {
-                    console.log(graphStore.svgRef);
-                    download(makeSvg(graphStore.svgRef),'svg','image/svg+xml' );
+                    toPng(graphStore.svgRef,{
+                        backgroundColor: '#FFFFFF'
+                    }).then(function (dataUrl) {
+                        downloadImage(dataUrl, 'behavior_tree.png');
+                      });
                 }}
             >
-                SVG
-            </button> */}
+                PNG
+            </button>
         </>
     }
 
